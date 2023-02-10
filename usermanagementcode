@@ -1,0 +1,122 @@
+@Entity
+public class Library {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String libraryName;
+    private String libraryAddress;
+    private Long libraryNumber;
+    private List<String> libraryFacilities;
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLibraryName() {
+        return libraryName;
+    }
+
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
+    }
+
+    public String getLibraryAddress() {
+        return libraryAddress;
+    }
+
+    public void setLibraryAddress(String libraryAddress) {
+        this.libraryAddress = libraryAddress;
+    }
+
+    public Long getLibraryNumber() {
+        return libraryNumber;
+    }
+
+    public void setLibraryNumber(Long libraryNumber) {
+        this.libraryNumber = libraryNumber;
+    }
+
+    public List<String> getLibraryFacilities() {
+        return libraryFacilities;
+    }
+
+    public void setLibraryFacilities(List<String> libraryFacilities) {
+        this.libraryFacilities = libraryFacilities;
+    }
+    
+}
+
+@RestController
+@RequestMapping("api/v1/library-management")
+public class LibraryController {
+    @Autowired
+    private LibraryService libraryService;
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addLibrary(@RequestBody Library library) {
+        libraryService.addLibrary(library);
+        return new ResponseEntity<>("Library added successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/library")
+    public Library getLibrary(@RequestParam String libraryName) {
+        return libraryService.getLibrary(libraryName);
+    }
+
+    @GetMapping("/libraries")
+    public List<Library> getAllLibraries() {
+        return libraryService.getAllLibraries();
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateLibrary(@RequestBody Library library) {
+        libraryService.updateLibrary(library);
+        return new ResponseEntity<>("Library updated successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{libraryName}")
+    public ResponseEntity<String> deleteLibrary(@PathVariable String libraryName) {
+        libraryService.deleteLibrary(libraryName);
+        return new ResponseEntity<>("Library deleted successfully", HttpStatus.OK);
+    }
+}
+
+@Service
+public class LibraryService {
+    private List<Library> libraries = new ArrayList<>();
+
+    public void addLibrary(Library library) {
+        libraries.add(library);
+    }
+
+    public Library getLibrary(String libraryName) {
+        return libraries.stream()
+                       .filter(l -> l.getLibraryName().equals(libraryName))
+                       .findFirst()
+                       .orElse(null);
+    }
+
+    public List<Library> getAllLibraries() {
+        return libraries;
+    }
+
+    public void updateLibrary(Library library) {
+        Library existingLibrary = getLibrary(library.getLibraryName());
+        if (existingLibrary != null) {
+            existingLibrary.setLibraryAddress(library.getLibraryAddress());
+            existingLibrary.setLibraryFacilities(library.getLibraryFacilities());
+            existingLibrary.setLibraryNumber(library.getLibraryNumber());
+        }
+    }
+
+    public void deleteLibrary(String libraryName) {
+        Library libraryToDelete = getLibrary(libraryName);
+        if (libraryToDelete != null) {
+            libraries.remove(libraryToDelete);
+        }
+    }
+}

@@ -48,6 +48,25 @@ public class Library {
         this.libraryFacilities = libraryFacilities;
     }
     
+     @Override
+    public String toString() {
+        return "Todo{" +
+                "id=" + id +
+                ", libraryName='" + libraryName + '\'' +
+                ", libraryAddress='" + libraryAddress + '\'' +
+                ", libraryNumber=" + libraryNumber +
+                ", libraryFacilities=" + libraryFacilities +
+                '}';
+    }
+
+    public Todo(Long id, String libraryName, String libraryAddress, Long libraryNumber, List<String> libraryFacilities) {
+        this.id = id;
+        this.libraryName = libraryName;
+        this.libraryAddress = libraryAddress;
+        this.libraryNumber = libraryNumber;
+        this.libraryFacilities = libraryFacilities;
+    }
+    
 }
 
 @RestController
